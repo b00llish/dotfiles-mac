@@ -41,10 +41,10 @@ done
 export ZSH=$HOME/.dotfiles
 
 # Set macOS defaults
-$ZSH/macos/settings
+# $ZSH/macos/settings
 
 # Set Xcode defaults
 $ZSH/xcode/defaults
 
 # Install homebrew
-$ZSH/brew/install.sh
+# $ZSH/brew/install.sh

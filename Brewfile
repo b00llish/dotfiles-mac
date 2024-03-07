@@ -48,6 +48,7 @@ brew 'bat'
 brew 'carthage'
 brew 'cocoapods'
 brew 'coreutils' # Those that come with macOS are outdated
+brew 'eza'
 brew 'gh'
 brew 'git'
 brew 'grep'
