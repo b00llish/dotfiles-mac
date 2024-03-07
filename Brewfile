@@ -1,4 +1,5 @@
 # Still needed:
+# exa
 # open in
 # open-vpn / open-vpn connect; https://formulae.brew.sh/formula/openvpn#default ?
 # twitter
@@ -20,11 +21,20 @@
 # vscode - insiders
 # proton-mail - beta
 # bitwarden
+# logitech-unifying
+# wireguard-go
+# yubikey-personalization
+# yubkikey-manager
 
 # Consider:
 # cask 'helo' # e-mail debugger for developers
 # brew swiftdefaultappsprefpane
 # crypto-pro
+# brew "git-gui"
+# brew 'imagemagick'
+# brew 'wget'
+# brew "duti"
+# brew "openssl@3"
 
 # Taps
 tap 'homebrew/cask-fonts'
@@ -47,8 +57,11 @@ brew 'mackup'
 brew 'mas' # Mac App Store manager
 brew 'pass'
 brew 'pkg-config' # https://github.com/driesvints/dotfiles/issues/20
+brew 'solana'
 brew 'svn' # Needed to install 
 brew 'tree'
+brew 'wireguard-go'
+brew 'wireguard-tools'
 brew 'zsh-completions'
 
 # Dev Apps
@@ -65,6 +78,7 @@ cask 'warp'
 # Development
 brew 'heroku/brew/heroku'
 brew 'gettext'
+brew 'just'
 brew 'lazygit'
 brew 'mysql'
 brew 'poetry'
@@ -75,7 +89,7 @@ brew 'redis'
 brew 'yarn'
 
 # Apps
-cask '1password'
+# cask '1password'
 cask '1password-cli'
 cask 'arc'
 cask 'bartender'
@@ -95,7 +109,6 @@ cask 'google-drive'
 cask 'insomnia' # api test 
 cask 'ledger-live'
 cask 'logi-options-plus'
-cask 'logitech-unifying'
 cask 'marginnote'
 cask 'microsoft-excel'
 cask 'microsoft-word'
@@ -117,7 +130,6 @@ cask 'telegram-desktop'
 cask 'the-unarchiver'
 cask 'todoist'
 cask 'transmit'
-cask 'wireguard-go'
 cask 'tuple'
 cask 'whatsapp'
 cask 'ykpers' # yubikey-personalization
@@ -130,10 +142,11 @@ cask 'font-open-sans'
 cask 'font-roboto'
 cask 'font-source-code-pro-for-powerline'
 cask 'font-source-code-pro'
-cask 'font-source-sans-pro'
-cask 'font-source-serif-pro'
 
 # Mac App Store
+mas "1Password for Safari", id: 1569813296
 mas 'Drafts', id: 1435957248
 mas 'HP Smart', id: 1474276998
+mas 'NextDNS', id: 1464122853
 mas 'Raivo OTP', id: 1498497896
+mas 'zClock', id: 1478540997
