@@ -9,10 +9,10 @@ curl https://raw.githubusercontent.com/b00llish/dotfiles-mac/HEAD/ssh.sh | sh -s
  
  3. Clone this repo to ~/.dotfiles with:
  ```zsh 
- git clone --recursive git@github.com:b00llish/dotfiles.git ~/.dotfiles
+ git clone --recursive git@github.com:b00llish/dotfiles-mac.git ~/.dotfiles
  ```
 
  4. Run the installation with:
  ```zsh
- cd~/.dotfiles && ./fresh.sh
+ cd ~/.dotfiles && ./fresh.sh
  ```
