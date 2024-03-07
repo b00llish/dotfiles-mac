@@ -5,10 +5,26 @@
 # adspower browser
 # wifi-man
 # samsung portable SSD
+# onepassword for safari
+# raindrop for safari
+# bank2qfx
+# quicken / quicken-beta
+# folder tidy
+# readdle documents
+# menubar stats
+# NextDNS
+# protonmail beta
+# pibar
+# spacemesh
+# spotify
+# vscode - insiders
+# proton-mail - beta
+# bitwarden
 
 # Consider:
 # cask 'helo' # e-mail debugger for developers
 # brew swiftdefaultappsprefpane
+# crypto-pro
 
 # Taps
 tap 'homebrew/cask-fonts'
@@ -20,28 +36,37 @@ tap 'nicoverbruggen/homebrew-cask'
 brew 'awscli'
 brew 'bash' # Latest Bash version
 brew 'bat'
+brew 'carthage'
+brew 'cocoapods'
 brew 'coreutils' # Those that come with macOS are outdated
 brew 'gh'
 brew 'git'
 brew 'grep'
 brew 'httpie'
+brew 'lsd'
 brew 'mackup'
 brew 'mas' # Mac App Store manager
+brew 'pass'
 brew 'pkg-config' # https://github.com/driesvints/dotfiles/issues/20
-brew 'svn' # Needed to install fonts
+brew 'svn' # Needed to install 
+brew 'tree'
+brew 'zsh-completions'
 
 # Dev Apps
+cask 'charles'
+cask 'iterm2'
 cask 'jetbrains-toolbox'
 cask 'pgadmin4'
 cask 'pycharm'
 cask 'redisinsight'
 cask 'sublime-text'
-cask 'iterm2'
 cask 'visual-studio-code'
 cask 'warp'
 
 # Development
 brew 'heroku/brew/heroku'
+brew 'gettext'
+brew 'lazygit'
 brew 'mysql'
 brew 'poetry'
 brew 'postgresql@15'
@@ -52,20 +77,27 @@ brew 'yarn'
 
 # Apps
 cask '1password'
+cask '1password-cli'
 cask 'arc'
 cask 'bartender'
 cask 'brave-browser'
 cask 'caffeine'
 cask 'cardhop'
+cask 'daisydisk'
 cask 'dbngin'
 cask 'discord'
 cask 'docker'
+cask 'dropbox'
 cask 'fantastical'
 cask 'firefox'
 cask 'github'
 cask 'google-chrome'
+cask 'google-drive'
 cask 'insomnia' # api test 
 cask 'ledger-live'
+cask 'logi-options-plus'
+cask 'logitech-unifying'
+cask 'marginnote'
 cask 'microsoft-excel'
 cask 'microsoft-word'
 cask 'microsoft-powerpoint'
@@ -89,6 +121,7 @@ cask 'transmit'
 cask 'wireguard-go'
 cask 'tuple'
 cask 'whatsapp'
+cask 'ykpers' # yubikey-personalization
 cask 'yubico-yubikey-manager'
 cask 'zoom'
 
