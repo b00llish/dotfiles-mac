@@ -4,5 +4,30 @@
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
+source /opt/homebrew/share/antigen/antigen.zsh
 
-plugins=(git z zsh-autosuggestions)
+# Theme
+antigen theme romkatv/powerlevel10k
+
+# Plugins
+antigen bundle --loc=plugins/git
+antigen bundle --loc=plugins/z
+
+# Run this last
+antigen apply
+
+
+# plugins=(git z zsh-autosuggestions)
+
+# Caching bundles greatly improves performance:
+# https://github.com/zsh-users/antigen/wiki/Commands
+
+# Run the following to generate a cache of the bundles:
+# antigen cache-gen
+
+# makes use of caching:
+# antigen init /path/to/.antigenrc
+# .antigenrc contains Antigen configuration (bundle, bundles, theme)
+
+# Then, on occasion, update bundles using:
+# antigen update [<bundle-name>]

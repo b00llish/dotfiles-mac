@@ -28,7 +28,7 @@
 
 [core]
 	editor = pycharm
-	excludesfile = ~/.gitignore
+	excludesfile = ~/.dotfiles/.gitignore
 	
 [credential]
 	helper = osxkeychain

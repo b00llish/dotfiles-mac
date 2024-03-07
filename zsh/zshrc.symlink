@@ -8,7 +8,7 @@ source $HOME/.dotfiles/zsh/plugins
 source $ZSH/oh-my-zsh.sh
 
 # Load: POWERLINE
-#source $HOME/.dotfiles/zsh/powerlevel9k
+source $HOME/.dotfiles/zsh/powerlevel9k
 
 # Load: Spaceship Configurations
 source $HOME/.dotfiles/zsh/spaceship
@@ -25,6 +25,16 @@ export PATH=${PATH}:$HOME/go/bin
 # chmod +x /usr/local/bin/code
 
 # Java
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-11.0.11.jdk/Contents/Home"
-export PATH=$PATH:$JAVA_HOME/bin
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-11.0.11.jdk/Contents/Home"
+# export PATH=$PATH:$JAVA_HOME/bin
 
+# Must be sourced at end of .zshrc:
+
+# https://formulae.brew.sh/formula/zsh-autosuggestions#default
+source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# https://formulae.brew.sh/formula/powerlevel10k#default
+source $HOMEBREW_PREFIX/share/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# [[ ! -f ~$DOTFILES/zsh/p10k.zsh]] || source ~$DOTFILES/zsh/p10k.zsh
