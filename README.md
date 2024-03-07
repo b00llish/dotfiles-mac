@@ -16,3 +16,5 @@ curl https://raw.githubusercontent.com/b00llish/dotfiles-mac/HEAD/ssh.sh | sh -s
  ```zsh
  cd ~/.dotfiles && ./fresh.sh
  ```
+
+ - command will halt after installing oh-my-zsh; re-run the same command to continue with remaining tasks
