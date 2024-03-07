@@ -1,0 +1,30 @@
+# Load: Configurations
+source $HOME/.dotfiles/zsh/config
+
+# Load: Plugins
+source $HOME/.dotfiles/zsh/plugins
+
+# Load: OH-MY-ZSH
+source $ZSH/oh-my-zsh.sh
+
+# Load: POWERLINE
+#source $HOME/.dotfiles/zsh/powerlevel9k
+
+# Load: Spaceship Configurations
+source $HOME/.dotfiles/zsh/spaceship
+
+# Load: ALIASES
+source $HOME/.dotfiles/zsh/aliases
+
+# Add: Go Enviroment to PATH
+export PATH=${PATH}:$HOME/go/bin
+
+# Install: VSCode's `code` command in PATH
+# cp $HOME/.dotfiles/zsh/vscode /usr/local/bin/code
+# export PATH=${PATH}:/usr/local/bin/code
+# chmod +x /usr/local/bin/code
+
+# Java
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-11.0.11.jdk/Contents/Home"
+export PATH=$PATH:$JAVA_HOME/bin
+
