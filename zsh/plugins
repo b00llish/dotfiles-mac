@@ -10,12 +10,15 @@ source /opt/homebrew/share/antigen/antigen.zsh
 antigen theme romkatv/powerlevel10k
 
 # Plugins
-antigen bundle --loc=plugins/git
-antigen bundle --loc=plugins/z
+antigen bundle git
+antigen bundle sublime
+# antigen bundle thefuck
+antigen bundle z
+antigen bundle zsh-autosuggestions
+antigen bundle zsh-users/zsh-syntax-highlighting
 
 # Run this last
 antigen apply
-
 
 # plugins=(git z zsh-autosuggestions)
 
