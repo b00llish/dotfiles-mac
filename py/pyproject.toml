@@ -1,0 +1,183 @@
+[tool.poetry]
+name = "raffle-tasks"
+version = "0.1.0"
+description = ""
+authors = ["b00llish <b00llish@pm.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+black = {version = "<=23.3.00", extras = ["d"]}
+datamodel-code-generator = "^0.21.4"
+devtools = {extras = ["pygments"], version = "^0.11.0"}
+honcho = "^1.1.0"
+mypy = "^1.5.1"
+ruff = "^0.0.285"
+ruff-lsp = "^0.0.35"
+
+
+[[tool.poetry.source]]
+name = "private-pypi"
+url = "http://172.233.221.107:80/simple/"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.mypy]
+python_version = "3.11"
+plugins = [
+  "pydantic.mypy"
+]
+
+ignore_missing_imports = true
+ignore_errors = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pydantic-mypy] #
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+
+
+[tool.mypy]
+python_version = "3.11"
+plugins = [
+  "pydantic.mypy"
+]
+
+ignore_missing_imports = true
+ignore_errors = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pydantic-mypy] #
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+
+#exclude = [
+#    '^file1\.py$',  # TOML literal string (single-quotes, no escaping necessary)
+#    "^file2\\.py$",  # TOML basic string (double-quotes, backslash and other characters need escaping)
+#]
+
+# mypy per-module options:
+#[[tool.mypy.overrides]]
+#module = "mycode.foo.*"
+#disallow_untyped_defs = true
+
+#[[tool.mypy.overrides]]
+#module = "mycode.bar"
+#warn_return_any = false
+#
+#[[tool.mypy.overrides]]
+#module = [
+#    "somelibrary",
+#    "some_other_library"
+#]
+#warn_return_any = false
+
+
+
+[tool.ruff]
+# defaults, per https://beta.ruff.rs/docs/configuration/
+# settings for isort configuration: https://beta.ruff.rs/docs/faq/#how-does-ruffs-import-sorting-compare-to-isort
+
+# Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = [
+    "A",  # prevent using keywords that clobber python builtins
+    "ASYNC", # flake8-async
+#    "ANN", # flake8-annotations
+    "B",  # bugbear: security warnings
+    "C4", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "E",  # pycodestyle (errors)
+    "F",  # pyflakes
+    "I001", # isort
+    "ISC",  # implicit string concatenation
+    "PD", # pandas vet
+    "PERF", # perflint (performance)
+#    "PL", # pylint
+#    "PTH", # flake8-use-pathlib
+    "RET", # flake8-return
+    "SLOT", # flake8-slots
+#    "T20", # flake8-print
+#    "TID", # flake8-tidy-imports
+    "UP",  # alert you when better syntax is available in your python version
+    "RUF",  # the ruff developer's own rules
+#    "W",  # pycodestyle (warnings)
+]
+ignore = [
+    "E712",  # Allow using if x == False, as it's not always equivalent to if x.
+    "E501",  # Supress line-too-long warnings: trust black's judgement on this one.
+]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "__pycache__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+
+    # data folders
+    "arch",
+    "*/.arch/*",
+
+    # misc files
+    "useful_commands.md",
+    "/.vscode",
+    "/.gitpod",
+    ".gitignore",
+    ".sourcery.yaml",
+    ".python-version",
+    ".Procfile",
+    ".Procfile.dev",
+    ".requirements.txt",
+    ".env",
+    ".justfile",
+]
+per-file-ignores = {}
+
+# Same as Black.
+line-length = 88
+
+# Note: Ruff supports a top-level `src` option in lieu of isort's `src_paths` setting.
+src = ["./*"]
+
+# Assume Python 3.8
+target-version = "py311"
