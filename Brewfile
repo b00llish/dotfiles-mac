@@ -1,5 +1,5 @@
 # Still needed:
-# exa
+# switchResX
 # open in
 # open-vpn / open-vpn connect; https://formulae.brew.sh/formula/openvpn#default ?
 # twitter

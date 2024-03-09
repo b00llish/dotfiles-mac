@@ -2,4 +2,6 @@
 engine = icloud
 
 [applications_to_ignore]
+iterm2
+ssh
 zsh

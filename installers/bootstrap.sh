@@ -4,8 +4,10 @@
 # taken from:
 # https://github.com/holman/dotfiles/blob/master/script/bootstrap
 
-cd "$(dirname "$0")/.."
-DOTFILES_ROOT=$(pwd -P)
+# cd "$(dirname "$0")/.."
+# must be run from the root of the dotfiles directory
+DOTFILES_ROOT=~/.dotfiles
+# DOTFILES_ROOT=$(pwd -P)
 
 set -e
 
