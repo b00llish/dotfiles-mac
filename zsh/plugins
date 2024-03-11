@@ -11,6 +11,7 @@ antigen theme romkatv/powerlevel10k
 
 # Plugins
 antigen bundle git
+# antigen bundle poetry
 antigen bundle sublime
 # antigen bundle thefuck
 antigen bundle z

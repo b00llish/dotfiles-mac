@@ -61,6 +61,7 @@ brew 'pkg-config' # https://github.com/driesvints/dotfiles/issues/20
 brew 'solana'
 brew 'svn' # Needed to install 
 brew 'tree'
+brew 'wget'
 brew 'wireguard-go'
 brew 'wireguard-tools'
 brew 'zsh-completions'
@@ -83,7 +84,7 @@ brew 'just'
 brew 'lazygit'
 brew 'mysql'
 brew 'poetry'
-brew 'postgresql@15'
+brew 'postgresql'
 brew 'pyenv'
 brew 'node'
 brew 'redis'
@@ -146,8 +147,11 @@ cask 'font-source-code-pro'
 
 # Mac App Store
 mas "1Password for Safari", id: 1569813296
+mas 'Crypto Pro', id: 980888073
 mas 'Drafts', id: 1435957248
 mas 'HP Smart', id: 1474276998
 mas 'NextDNS', id: 1464122853
 mas 'Raivo OTP', id: 1498497896
+mas 'Save to Raindrop.io', id: 1549370672
+mas 'WireGuard', id: 1451685025
 mas 'zClock', id: 1478540997

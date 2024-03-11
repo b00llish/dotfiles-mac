@@ -20,6 +20,8 @@ alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
 alias projects="cd $HOME/Developer"
 
+# SSH
+alias ssh_miner="ssh miner@172.104.157.141"
 
 # Moving around
 alias ..='cd ..'
