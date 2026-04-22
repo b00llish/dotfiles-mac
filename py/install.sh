@@ -7,8 +7,8 @@
 # source ~/.zshrc
 
 # Install Python:
-pyenv install 3.11.5
-pyenv global 3.11.5
+pyenv install 3.12.8
+pyenv global 3.12.8
 
 # Add Poetry completions:
 mkdir $ZSH_CUSTOM/plugins/poetry

@@ -181,13 +181,9 @@ zsh treats those as multi-line strings, swallowing the next several lines into t
 
 **Fix:** added closing quotes and `export`s.
 
-### 3. `~/.zshenv` and `~/.zlogin` symlinked to Dropbox/Mackup, not iCloud/Mackup
+### 3. Stale `~/.zshenv` & `~/.zlogin` removed ✅ FIXED 2026-04-22
 
-Every other Mackup-synced file in `~` points to `~/Library/Mobile Documents/com~apple~CloudDocs/Mackup/`. These two still point to `~/Dropbox/Mackup/` from the pre-iCloud era. Contents:
-- `.zshenv` — old prezto-style "warning: don't edit PATH from .zshenv.local" message
-- `.zlogin` — RVM (Ruby Version Manager) shim; not currently relied on
-
-**Recommendation:** Either (a) move the iCloud/Mackup copies of these in, then `rm` and re-symlink to the iCloud path, or (b) drop both symlinks entirely if you no longer use prezto/RVM. Most likely (b).
+Both symlinks deleted. They pointed to `~/Dropbox/Mackup/` (pre-iCloud era) and contained inert prezto / RVM shims that weren't being relied on. The Dropbox/Mackup files themselves are untouched (and harmless) on disk.
 
 ### 4. `fresh.sh` has broken symlink commands
 
@@ -208,29 +204,29 @@ Every other Mackup-synced file in `~` points to `~/Library/Mobile Documents/com~
 
 **Decision needed:** either (a) make this repo authoritative for `.gitconfig` and remove from Mackup, or (b) delete `git/gitconfig.symlink` and let Mackup own it. Option (a) is more git-friendly (changes are versioned).
 
-### 7. `git pr` alias points to nonexistent script
+### 7. `git pr` alias fixed ✅ FIXED 2026-04-22
 
-`gitconfig.symlink` and the Mackup'd `.gitconfig` both define `pr = !sh ~/.dotfiles/git/pull_request.sh`, but no `pull_request.sh` exists. `git pr` will silently no-op. Either remove the alias or write the script (or replace with `gh pr create`).
+Replaced `pr = !sh ~/.dotfiles/git/pull_request.sh` with `pr = !gh pr create` in both the active `~/.gitconfig` and the dotfiles `git/gitconfig.symlink` (kept in sync pending #6 resolution).
 
-### 8. `.gitignore_global` exists but isn't wired up
+### 8. `.gitignore_global` wired up ✅ FIXED 2026-04-22
 
-`.dotfiles/.gitignore_global` has solid global ignores (`.DS_Store`, `.idea/`, `.vscode`, packages, logs). But the active `core.excludesfile` in `gitconfig.symlink` is `~/.dotfiles/.gitignore` (only 2 lines). Recommendation: either point `core.excludesfile = ~/.dotfiles/.gitignore_global`, or merge the contents.
+Active `~/.gitconfig` previously pointed `core.excludesfile = ~/.gitignore` (file didn't exist — global ignores were silently a no-op). Now points to `~/.dotfiles/.gitignore_global`. Verified: `.DS_Store` is globally ignored.
 
 ### 9. Plugin manager ✅ RESOLVED 2026-04-22
 
 Migrated off antigen. `zsh/plugins` now sets `plugins=(git sublime z)` for oh-my-zsh's native plugin loader. Non-OMZ plugins (`zsh-autosuggestions`, `powerlevel10k`, `zsh-syntax-highlighting`) are sourced directly from `$HOMEBREW_PREFIX` at the end of `zshrc.symlink`. Brewfile updated to include all three so a fresh Mac install gets them; `antigen` package uninstalled.
 
-### 10. `.zshrc-old` is dead weight
+### 10. `.zshrc-old` removed ✅ FIXED 2026-04-22
 
-4KB of stale config from before the antigen+p10k migration. Recommendation: delete (it's already in git history if you ever want it back).
+Deleted via `git rm`. Still recoverable from git history if ever needed.
 
 ### 11. README's "command will halt after installing oh-my-zsh; re-run" is no longer true
 
 Old `fresh.sh` had logic that exited mid-install. The current one doesn't. (Already corrected in this rewrite.)
 
-### 12. `installers/install.sh` runs `py/install.sh`, which pins Python 3.11.5
+### 12. Python pin bumped ✅ FIXED 2026-04-22
 
-`py/install.sh` does `pyenv install 3.11.5 && pyenv global 3.11.5`. That version is now ~2 years old. Bump to a current 3.12.x or 3.13.x when convenient.
+`py/install.sh` now installs `3.12.8` (latest 3.12.x patch via pyenv) instead of `3.11.5`.
 
 ---
 
