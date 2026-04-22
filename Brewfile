@@ -56,6 +56,7 @@ brew 'httpie'
 brew 'lsd'
 brew 'mackup'
 brew 'mas' # Mac App Store manager
+brew 'netdata'
 brew 'pass'
 brew 'pkg-config' # https://github.com/driesvints/dotfiles/issues/20
 brew 'solana'

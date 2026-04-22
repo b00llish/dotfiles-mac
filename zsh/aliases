@@ -15,13 +15,24 @@ alias lt="eza -al --sort=modified"
 alias reload="source $HOME/.zshrc"
 alias zshconfig="nano $DOTFILES/zsh/zshconfig.symlink"
 
-# Directories
+# Directories - update this to use named-dirs, will then need to source named-dirs before aliases
 alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
-alias projects="cd $HOME/Developer"
+alias projects="cd $HOME/Developer/Projects"
+
+# Bitcoin
+# alias ord="ord --cookie-file=$BTCDIR/.cookie"
+alias btc_logs="tail -F -n 10000 /Users/cmadison/Library/Application\ Support/Bitcoin/debug.log"
+alias mint="/Users/cmadison/Developer/scripts/mint-rune.sh"
+
 
 # SSH
 alias ssh_miner="ssh miner@172.104.157.141"
+alias login_tasks="ssh dev@172.234.19.160"
+alias login_pg="ssh dev@172.232.20.115"
+alias login_redis="ssh dev@172.233.221.200"
+alias login_packages="ssh root@172.233.221.107"
+# alias login_rdi="ssh dev@172.239.198.139"
 
 # Moving around
 alias ..='cd ..'

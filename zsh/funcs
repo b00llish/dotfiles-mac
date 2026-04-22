@@ -1,0 +1,42 @@
+# shortcut to open btc options app
+
+ibit() {
+  (cd ~/Developer/Projects/btc_options && poetry run streamlit run app.py)
+}
+
+# rdi-cost — run the truck-day cost pipeline from anywhere.
+#
+# Install:
+#   echo 'source ~/Developer/Projects/rdi-market-profitability/scripts/rdi-cost.zsh' >> ~/.zshrc
+#   source ~/.zshrc
+#
+# Usage:
+#   rdi-cost                           # uses the default week from run_cost.py
+#   rdi-cost 2026-03-21                # shorthand: first arg is the week
+#   rdi-cost --week 2026-03-21         # explicit flag
+#   rdi-cost 2026-03-21 --no-upload    # dry-run (no S3 upload)
+#   rdi-cost --help                    # delegates to run_cost.py's argparse help
+
+rdi-cost() {
+  local repo="$HOME/Developer/Projects/rdi-market-profitability"
+  local py="$repo/.venv/bin/python"
+
+  if [[ ! -x "$py" ]]; then
+    echo "rdi-cost: venv python not found at $py" >&2
+    echo "rdi-cost: create the venv first (python3 -m venv .venv && .venv/bin/pip install -r requirements.txt)" >&2
+    return 127
+  fi
+
+  # Ergonomic arg handling: if $1 matches YYYY-MM-DD, prepend --week.
+  # Otherwise forward args verbatim so all of run_cost.py's flags work.
+  local -a args=()
+  if [[ $# -gt 0 && "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+    args=(--week "$1")
+    shift
+    args+=("$@")
+  else
+    args=("$@")
+  fi
+
+  (cd "$repo" && "$py" run_cost.py "${args[@]}")
+}

@@ -25,6 +25,7 @@ brew update
 # Install all our dependencies with bundle (See Brewfile)
 brew tap homebrew/bundle
 brew bundle --file ./Brewfile
+brew services start netdata
 
 # Create a projects directories
 mkdir $HOME/Developer

@@ -13,8 +13,14 @@ source $HOME/.dotfiles/zsh/powerlevel9k
 # Load: Spaceship Configurations
 source $HOME/.dotfiles/zsh/spaceship
 
+# Load: Named Directories
+source $HOME/.dotfiles/zsh/named-dirs
+
 # Load: ALIASES
 source $HOME/.dotfiles/zsh/aliases
+
+# Load: Functions
+source $HOME/.dotfiles/zsh/funcs
 
 # Add: Go Enviroment to PATH
 export PATH=${PATH}:$HOME/go/bin
@@ -28,6 +34,17 @@ if command -v pyenv 1>/dev/null 2>&1; then
 
 # Add Poetry to the PATH:
 export PATH=$HOME/.poetry/bin:${PATH}
+
+# Activate ZSH Completions
+# https://formulae.brew.sh/formula/zsh-completions#default
+if type brew &>/dev/null; then
+     FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+     autoload -Uz compinit
+     compinit
+    fi
+
+
 
 # Install: VSCode's `code` command in PATH
 # cp $HOME/.dotfiles/zsh/vscode /usr/local/bin/code

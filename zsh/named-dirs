@@ -1,0 +1,9 @@
+# zsh named directories — work anywhere a path is valid (unlike aliases,
+# which only expand in command position). Use as ~projects/foo/bar, etc.
+
+# needs to be sourced before aliases
+
+hash -d projects=$HOME/Developer/Projects
+hash -d dotfiles=$DOTFILES
+hash -d library=$HOME/Library
+hash -d rdi=$HOME/Developer/Projects/rdi-brain
