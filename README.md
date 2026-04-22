@@ -30,9 +30,7 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 │   ├── named-dirs                 ← ~projects, ~dotfiles, ~rdi shortcuts
 │   ├── aliases                    ← `reload`, `gst`, `projects`, etc.
 │   ├── funcs                      ← `ibit`, `rdi-cost` shell functions
-│   ├── powerlevel9k               ← ACTIVE — p10k config (uses POWERLEVEL9K_* prefix for back-compat)
-│   ├── spaceship                  ← LEGACY — broken, removed from sourcing
-│   ├── p10k.sh                    ← 52KB powerlevel10k baseline (not currently sourced)
+│   ├── p10k.zsh                   ← powerlevel10k config (uses POWERLEVEL9K_* prefix for back-compat)
 │   ├── plugins.zwc                ← compiled cache for plugins file
 │   └── vscode                     ← VSCode `code` shim (not installed by default)
 │
@@ -77,7 +75,7 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 1. `zsh/config` — `$ZSH=~/.oh-my-zsh`, p10k instant prompt, `SSH_AUTH_SOCK` (1Password), gcloud PATH, BTC env vars
 2. `zsh/plugins` — antigen + bundles (`git`, `sublime`, `z`, `zsh-autosuggestions`, `zsh-syntax-highlighting`) + theme `romkatv/powerlevel10k`
 3. `$ZSH/oh-my-zsh.sh` — full oh-my-zsh load
-4. `zsh/powerlevel9k` — sets the `POWERLEVEL9K_*` variables that drive the active p10k prompt (p10k respects the legacy prefix)
+4. `zsh/p10k.zsh` — sets the `POWERLEVEL9K_*` variables that drive the p10k prompt (p10k respects the legacy prefix)
 5. `zsh/named-dirs` — registers `~projects`, `~dotfiles`, `~library`, `~rdi`
 6. `zsh/aliases` — every `gst`/`pull`/`push`/`reload` alias
 7. `zsh/funcs` — `ibit`, `rdi-cost` functions
@@ -218,19 +216,11 @@ Every other Mackup-synced file in `~` points to `~/Library/Mobile Documents/com~
 
 `.dotfiles/.gitignore_global` has solid global ignores (`.DS_Store`, `.idea/`, `.vscode`, packages, logs). But the active `core.excludesfile` in `gitconfig.symlink` is `~/.dotfiles/.gitignore` (only 2 lines). Recommendation: either point `core.excludesfile = ~/.dotfiles/.gitignore_global`, or merge the contents.
 
-### 9. Multiple prompt-config files in `zsh/`
+### 9. Plugin manager: antigen vs. direct-brew (open decision)
 
-Three prompt-related files sit in `zsh/`:
-- `powerlevel9k` — **active**: this is your p10k config. p10k honors the `POWERLEVEL9K_*` prefix for back-compat, so the filename is misleading but the contents are live.
-- `spaceship` — legacy, removed from sourcing (was the cause of the `reload` hang).
-- `p10k.sh` — 52KB, never sourced. Looks like a snapshot of `~/.p10k.zsh` from an old `p10k configure` run.
+The active prompt is **powerlevel10k loaded by antigen** in `zsh/plugins`, configured by the variables in `zsh/p10k.zsh`. `zshrc.symlink` also direct-sources the brew copy of `powerlevel10k.zsh-theme` at the end — a redundant load that's currently harmless.
 
-The active prompt is **powerlevel10k loaded by antigen** in `zsh/plugins`, configured by the variables in `zsh/powerlevel9k`. There's also a redundant direct `source` of the brew-installed `powerlevel10k.zsh-theme` at the end of `zshrc.symlink`.
-
-**Recommendations (each independent):**
-- Rename `zsh/powerlevel9k` → `zsh/p10k-config` (or similar) and update the source path. The current filename suggests it's stale when it isn't.
-- Delete `zsh/spaceship` and `zsh/p10k.sh` — both unused.
-- Decide between antigen-managed p10k (current) or direct brew-managed p10k (then drop antigen). Antigen adds noticeable startup cost; if you don't use other antigen bundles, the direct path is faster.
+Antigen adds noticeable startup cost. Whether to keep it or switch to direct brew sourcing depends on whether you use any antigen-specific features. See the trade-off analysis below before deciding.
 
 ### 10. `.zshrc-old` is dead weight
 

@@ -7,14 +7,10 @@ source $HOME/.dotfiles/zsh/plugins
 # Load: OH-MY-ZSH
 source $ZSH/oh-my-zsh.sh
 
-# Load: prompt configuration. p10k respects the POWERLEVEL9K_* variable prefix
-# for backwards compatibility, so this file IS the p10k config — without it,
-# p10k sees no config and triggers the configuration wizard on every shell.
-source $HOME/.dotfiles/zsh/powerlevel9k
-
-# zsh/spaceship is intentionally NOT sourced — it sets PROMPT to call
-# spaceship_prompt, which is no longer installed (causes "command not found:
-# spaceship_prompt" + hang on `reload`).
+# Load: powerlevel10k prompt config. The variables use the POWERLEVEL9K_* prefix
+# (p10k honors it for back-compat). Without this file p10k triggers the
+# configuration wizard on every new shell.
+source $HOME/.dotfiles/zsh/p10k.zsh
 
 # Load: Named Directories
 source $HOME/.dotfiles/zsh/named-dirs
