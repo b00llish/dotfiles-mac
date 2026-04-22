@@ -65,7 +65,10 @@ brew 'tree'
 brew 'wget'
 brew 'wireguard-go'
 brew 'wireguard-tools'
+brew 'zsh-autosuggestions'
 brew 'zsh-completions'
+brew 'zsh-syntax-highlighting'
+brew 'powerlevel10k'
 
 # Dev Apps
 cask 'charles'

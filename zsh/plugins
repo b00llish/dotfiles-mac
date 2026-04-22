@@ -1,37 +1,15 @@
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+# oh-my-zsh plugin selection. This array is read by oh-my-zsh.sh when it's
+# sourced (after this file) in zshrc.symlink — order: this file → oh-my-zsh.sh.
+#
+# Standard plugins live in ~/.oh-my-zsh/plugins/<name>/
+# Custom plugins live in $ZSH_CUSTOM/plugins/<name>/
+#
+# Keep this list short — every plugin slows shell startup.
+plugins=(
+  git       # gst, gco, glog, etc. aliases
+  sublime   # `subl` shortcut
+  z         # `z <partial-name>` jumps to frequently-used dirs
+)
 
-source /opt/homebrew/share/antigen/antigen.zsh
-
-# Theme
-antigen theme romkatv/powerlevel10k
-
-# Plugins
-antigen bundle git
-# antigen bundle poetry
-antigen bundle sublime
-# antigen bundle thefuck
-antigen bundle z
-antigen bundle zsh-autosuggestions
-antigen bundle zsh-users/zsh-syntax-highlighting
-
-# Run this last
-antigen apply
-
-# plugins=(git z zsh-autosuggestions)
-
-# Caching bundles greatly improves performance:
-# https://github.com/zsh-users/antigen/wiki/Commands
-
-# Run the following to generate a cache of the bundles:
-# antigen cache-gen
-
-# makes use of caching:
-# antigen init /path/to/.antigenrc
-# .antigenrc contains Antigen configuration (bundle, bundles, theme)
-
-# Then, on occasion, update bundles using:
-# antigen update [<bundle-name>]
+# Non-OMZ plugins (zsh-autosuggestions, zsh-syntax-highlighting, powerlevel10k)
+# are sourced directly from $HOMEBREW_PREFIX at the end of zshrc.symlink.

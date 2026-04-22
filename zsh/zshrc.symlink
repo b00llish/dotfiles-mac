@@ -54,13 +54,14 @@ if type brew &>/dev/null; then
 # export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-11.0.11.jdk/Contents/Home"
 # export PATH=$PATH:$JAVA_HOME/bin
 
-# Must be sourced at end of .zshrc:
+# Must be sourced near end of .zshrc:
 
-# https://formulae.brew.sh/formula/zsh-autosuggestions#default
+# https://formulae.brew.sh/formula/zsh-autosuggestions
 source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# https://formulae.brew.sh/formula/powerlevel10k#default
+# https://formulae.brew.sh/formula/powerlevel10k
 source $HOMEBREW_PREFIX/share/powerlevel10k/powerlevel10k.zsh-theme
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~$DOTFILES/zsh/p10k.zsh]] || source ~$DOTFILES/zsh/p10k.zsh
+# https://formulae.brew.sh/formula/zsh-syntax-highlighting
+# IMPORTANT: must be sourced LAST (after every other plugin), per upstream docs.
+source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

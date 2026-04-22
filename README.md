@@ -73,19 +73,19 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 `~/.zshrc` → `zsh/zshrc.symlink`, which sources, in order:
 
 1. `zsh/config` — `$ZSH=~/.oh-my-zsh`, p10k instant prompt, `SSH_AUTH_SOCK` (1Password), gcloud PATH, BTC env vars
-2. `zsh/plugins` — antigen + bundles (`git`, `sublime`, `z`, `zsh-autosuggestions`, `zsh-syntax-highlighting`) + theme `romkatv/powerlevel10k`
-3. `$ZSH/oh-my-zsh.sh` — full oh-my-zsh load
+2. `zsh/plugins` — sets `plugins=(git sublime z)` for oh-my-zsh to consume
+3. `$ZSH/oh-my-zsh.sh` — full oh-my-zsh load (reads `plugins=(...)` set in step 2)
 4. `zsh/p10k.zsh` — sets the `POWERLEVEL9K_*` variables that drive the p10k prompt (p10k respects the legacy prefix)
 5. `zsh/named-dirs` — registers `~projects`, `~dotfiles`, `~library`, `~rdi`
 6. `zsh/aliases` — every `gst`/`pull`/`push`/`reload` alias
 7. `zsh/funcs` — `ibit`, `rdi-cost` functions
 8. pyenv init + poetry PATH + zsh-completions
-9. (At end of file) directly sources `zsh-autosuggestions` and `powerlevel10k.zsh-theme` from Homebrew — duplicates what antigen already loaded but is currently harmless
+9. (At end of file) sources `zsh-autosuggestions`, then `powerlevel10k.zsh-theme`, then `zsh-syntax-highlighting` from Homebrew (in that order — syntax-highlighting must be last)
 
 ### What's installed where
 
-- **Homebrew packages backing the shell:** `antigen`, `powerlevel10k`, `pyenv`, `zsh-autosuggestions`, `zsh-completions`
-- **Antigen bundles:** see `zsh/plugins`
+- **Homebrew packages backing the shell:** `powerlevel10k`, `pyenv`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions`
+- **oh-my-zsh plugins:** `git`, `sublime`, `z` (declared in `zsh/plugins`)
 - **Mac App Store apps via mas:** see `Brewfile` (1Password Safari, Crypto Pro, Drafts, HP Smart, NextDNS, Raivo OTP, WireGuard, etc.)
 - **Mackup ignored apps** (i.e., this repo manages them, not Mackup): `iterm2`, `ssh`, `zsh`
 
@@ -216,11 +216,9 @@ Every other Mackup-synced file in `~` points to `~/Library/Mobile Documents/com~
 
 `.dotfiles/.gitignore_global` has solid global ignores (`.DS_Store`, `.idea/`, `.vscode`, packages, logs). But the active `core.excludesfile` in `gitconfig.symlink` is `~/.dotfiles/.gitignore` (only 2 lines). Recommendation: either point `core.excludesfile = ~/.dotfiles/.gitignore_global`, or merge the contents.
 
-### 9. Plugin manager: antigen vs. direct-brew (open decision)
+### 9. Plugin manager ✅ RESOLVED 2026-04-22
 
-The active prompt is **powerlevel10k loaded by antigen** in `zsh/plugins`, configured by the variables in `zsh/p10k.zsh`. `zshrc.symlink` also direct-sources the brew copy of `powerlevel10k.zsh-theme` at the end — a redundant load that's currently harmless.
-
-Antigen adds noticeable startup cost. Whether to keep it or switch to direct brew sourcing depends on whether you use any antigen-specific features. See the trade-off analysis below before deciding.
+Migrated off antigen. `zsh/plugins` now sets `plugins=(git sublime z)` for oh-my-zsh's native plugin loader. Non-OMZ plugins (`zsh-autosuggestions`, `powerlevel10k`, `zsh-syntax-highlighting`) are sourced directly from `$HOMEBREW_PREFIX` at the end of `zshrc.symlink`. Brewfile updated to include all three so a fresh Mac install gets them; `antigen` package uninstalled.
 
 ### 10. `.zshrc-old` is dead weight
 
