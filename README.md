@@ -11,22 +11,21 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 ```
 .dotfiles/
 ├── README.md                      ← this file
-├── fresh.sh                       ← legacy bootstrap (see "Known Issues")
+├── fresh.sh                       ← end-to-end bootstrap (run on a new Mac)
 ├── ssh.sh                         ← generates ed25519 SSH key for GitHub
 ├── Brewfile                       ← every brew/cask/mas package
 ├── .macos                         ← 43KB of `defaults write` commands
-├── .gitignore_global              ← intended global gitignore (NOT currently linked — see Known Issues)
-├── .zshrc-old                     ← stale, can be archived (see Known Issues)
+├── .gitignore_global              ← global gitignore (wired up via core.excludesfile)
 │
 ├── installers/
-│   ├── bootstrap.sh               ← interactive symlink installer (links every *.symlink)
+│   ├── bootstrap.sh               ← symlink installer (links every *.symlink); idempotent
 │   ├── install.sh                 ← finds & runs every */install.sh subscript
 │   └── dot                        ← runs xcode + macos defaults
 │
 ├── zsh/                           ← active zsh setup (sourced by ~/.zshrc)
 │   ├── zshrc.symlink              ← top-level entry point; ~/.zshrc → here
 │   ├── config                     ← env vars, p10k instant-prompt, paths
-│   ├── plugins                    ← antigen + bundles + p10k theme
+│   ├── plugins                    ← `plugins=(git sublime z)` for oh-my-zsh
 │   ├── named-dirs                 ← ~projects, ~dotfiles, ~rdi shortcuts
 │   ├── aliases                    ← `reload`, `gst`, `projects`, etc.
 │   ├── funcs                      ← `ibit`, `rdi-cost` shell functions
@@ -35,20 +34,20 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 │   └── vscode                     ← VSCode `code` shim (not installed by default)
 │
 ├── git/
-│   ├── gitconfig.symlink          ← user/aliases/credential — links to ~/.gitconfig.local? (see Known Issues)
-│   ├── gitconfig.local.symlink    ← empty placeholder; ~/.gitconfig.local → here
+│   ├── gitconfig.symlink          ← active ~/.gitconfig source (versioned in this repo)
+│   ├── gitconfig.local.symlink    ← empty placeholder for machine-specific overrides
 │   ├── git_unpushed.sh            ← `git diffall` alias backs this
 │   ├── plog.sh                    ← `git plog` alias backs this
 │   └── sync_with_upstream.sh      ← `git syncu` alias backs this
 │
 ├── mackup/
-│   └── mackup.cfg.symlink         ← engine = icloud; ignores zsh/iterm2/ssh
+│   └── mackup.cfg.symlink         ← engine = icloud; ignores git/iterm2/ssh/zsh
 │
 ├── macos/
 │   └── settings                   ← additional macOS tweaks (currently unused)
 │
 ├── py/
-│   ├── install.sh                 ← `pyenv install 3.11.5` + poetry config
+│   ├── install.sh                 ← `pyenv install 3.12.8` + poetry config
 │   └── pyproject.toml             ← reference Python project template
 │
 ├── xcode/
@@ -62,11 +61,10 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 
 | Home file | Points to | Notes |
 |---|---|---|
-| `~/.zshrc` | `~/.dotfiles/zsh/zshrc.symlink` | active, this is the only zsh entry point that matters |
-| `~/.gitconfig.local` | `~/.dotfiles/git/gitconfig.local.symlink` | empty placeholder; harmless |
-| `~/.zshenv` | `~/Dropbox/Mackup/.zshenv` | **stale** — see Known Issues |
-| `~/.zlogin` | `~/Dropbox/Mackup/.zlogin` | **stale** — see Known Issues |
-| `~/.gitconfig`, `~/.aliases`, `~/.bashrc`, `~/.npmrc`, `~/.psqlrc`, ... | `~/Library/Mobile Documents/com~apple~CloudDocs/Mackup/...` | managed by Mackup over iCloud |
+| `~/.zshrc` | `~/.dotfiles/zsh/zshrc.symlink` | active, the only zsh entry point that matters |
+| `~/.gitconfig` | `~/.dotfiles/git/gitconfig.symlink` | versioned in this repo (was Mackup before 2026-04-22) |
+| `~/.gitconfig.local` | `~/.dotfiles/git/gitconfig.local.symlink` | empty placeholder for machine-specific overrides |
+| `~/.mackup.cfg`, `~/.aliases`, `~/.bashrc`, `~/.npmrc`, `~/.psqlrc`, ... | `~/Library/Mobile Documents/com~apple~CloudDocs/Mackup/...` | managed by Mackup over iCloud |
 
 ### How the active zsh load actually flows
 
@@ -87,44 +85,30 @@ This repo handles **shell, git, Brew packages, macOS defaults, and the bootstrap
 - **Homebrew packages backing the shell:** `powerlevel10k`, `pyenv`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions`
 - **oh-my-zsh plugins:** `git`, `sublime`, `z` (declared in `zsh/plugins`)
 - **Mac App Store apps via mas:** see `Brewfile` (1Password Safari, Crypto Pro, Drafts, HP Smart, NextDNS, Raivo OTP, WireGuard, etc.)
-- **Mackup ignored apps** (i.e., this repo manages them, not Mackup): `iterm2`, `ssh`, `zsh`
+- **Mackup ignored apps** (i.e., this repo manages them, not Mackup): `git`, `iterm2`, `ssh`, `zsh`
 
 ---
 
 ## Setting up a fresh Mac
 
-> The original `fresh.sh` has bugs (see Known Issues). Until those are fixed, follow this manual sequence.
-
 1. Sign into **1Password**.
-2. Generate an SSH key and add to GitHub:
+2. Clone this repo (over HTTPS — no SSH key needed yet):
    ```sh
-   curl https://raw.githubusercontent.com/b00llish/dotfiles-mac/HEAD/ssh.sh | sh -s "b00llish@pm.me"
+   git clone https://github.com/b00llish/dotfiles-mac.git ~/.dotfiles
+   ```
+3. Run the bootstrap:
+   ```sh
+   ~/.dotfiles/fresh.sh
+   ```
+   This installs Homebrew, installs oh-my-zsh, runs `installers/bootstrap.sh` to symlink every `*.symlink` file (`~/.zshrc`, `~/.gitconfig`, `~/.gitconfig.local`, `~/.mackup.cfg`), brew-bundles everything from the Brewfile, installs Python via pyenv, runs `mackup restore` to pull app configs from iCloud, and finally prompts before applying the macOS defaults from `.macos`. Each step is idempotent — safe to re-run.
+4. (Optional) generate an SSH key for GitHub if you want SSH protocol for any repos:
+   ```sh
+   ~/.dotfiles/ssh.sh "b00llish@pm.me"
    pbcopy < ~/.ssh/id_ed25519.pub
-   # then paste into github.com/settings/keys
+   # add at https://github.com/settings/keys (Authentication Key)
    ```
-3. Clone this repo:
-   ```sh
-   git clone git@github.com:b00llish/dotfiles-mac.git ~/.dotfiles
-   ```
-4. Install Homebrew (if not present), then everything in the Brewfile:
-   ```sh
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   brew bundle --file ~/.dotfiles/Brewfile
-   ```
-5. Symlink the configs that this repo owns:
-   ```sh
-   cd ~/.dotfiles && ./installers/bootstrap.sh
-   ```
-   This walks every `*.symlink` file (anywhere up to depth 2) and creates `~/.<basename>` pointing at it. Today that means `~/.zshrc`, `~/.gitconfig.local`, and `~/.mackup.cfg`.
-6. Restore Mackup-managed configs from iCloud:
-   ```sh
-   mackup restore
-   ```
-7. Apply macOS defaults (this restarts several apps; do it last):
-   ```sh
-   sh ~/.dotfiles/.macos
-   ```
-8. Open a new terminal and confirm the prompt loads cleanly.
+   All current repos use HTTPS + the gh OAuth token in the keychain, so this is only needed if you want to add SSH-protocol remotes.
+5. Open a new terminal and confirm the prompt loads cleanly.
 
 ---
 
@@ -145,7 +129,7 @@ Recommended cadence: **monthly skim, quarterly deeper pass**.
 
 - Aliases → append to `zsh/aliases`.
 - Functions → append to `zsh/funcs`.
-- Either way, run `reload` (after the Known Issues below are fixed) or `exec zsh` to pick up the change.
+- Either way, run `reload` (or `exec zsh`) to pick up the change.
 
 ### How to add a new tracked dotfile
 
@@ -160,73 +144,32 @@ Recommended cadence: **monthly skim, quarterly deeper pass**.
 
 ---
 
-## Known issues / cleanup backlog
+## Changelog
 
-These are real bugs found while auditing. Each is independent — fix as you have time.
+### 2026-04-22 — full audit + cleanup pass
 
-### 1. `reload` hangs and prints `command not found: spaceship_prompt` ✅ FIXED 2026-04-22
+A round of bug-hunting and modernization. No outstanding backlog as of this date.
 
-**Root cause:** `zshrc.symlink` was sourcing `zsh/spaceship`, which set `PROMPT='${${${$(spaceship_prompt)//...}}}'`. Spaceship-prompt is no longer installed (replaced by powerlevel10k via antigen), so every prompt redraw failed with "command not found", and re-sourcing in an active shell layered the broken PROMPT on top of the working one.
+**Shell:**
+- Fixed `reload` hang. `zshrc.symlink` was sourcing `zsh/spaceship`, which set `PROMPT='${$(spaceship_prompt)...}'` — spaceship-prompt is no longer installed (replaced by p10k via antigen), so every prompt redraw was failing.
+- Fixed broken pyenv quoting in `zshrc.symlink` (missing closing `"` on PYENV_ROOT/PATH lines was making zsh swallow the next several lines into the string). pyenv had been silently uninitialized, falling back on the brew binary.
+- Migrated off antigen → oh-my-zsh native `plugins=(git sublime z)` array + direct brew sources for `zsh-autosuggestions`, `powerlevel10k`, `zsh-syntax-highlighting` (in that order; syntax-highlighting must be last). All three brew packages added to Brewfile.
+- Renamed `zsh/powerlevel9k` → `zsh/p10k.zsh` (file was always p10k config — POWERLEVEL9K_* prefix is p10k's back-compat). Deleted `zsh/spaceship` and `zsh/p10k.sh` (both unused).
+- Deleted stale `~/.zshenv` and `~/.zlogin` symlinks (pointed to `~/Dropbox/Mackup/` from pre-iCloud era; held inert prezto / RVM shims).
+- Deleted `.zshrc-old` (4KB of pre-antigen config; recoverable from git history).
 
-**Fix:** removed the `source .../zsh/spaceship` line from `zshrc.symlink`. The `zsh/spaceship` file is left in place but unused; safe to delete in a future cleanup.
+**Git:**
+- Moved `~/.gitconfig` ownership from Mackup → this repo (symlinked to `git/gitconfig.symlink`). Two divergent configs were merged into one versioned file. Added `git` to Mackup's `applications_to_ignore` so it won't try to take it back. Restored the dormant aliases: `git lazy`, `git syncu`, `git parent`, `git last`, `git plog`, `git diffall`, `git contributors`, `git remotes`, `git amend`.
+- Wired up `core.excludesfile = ~/.dotfiles/.gitignore_global` (was a dead pointer to a nonexistent `~/.gitignore` — global ignores were silently a no-op).
+- Replaced `git pr = !sh ~/.dotfiles/git/pull_request.sh` (script never existed) with `git pr = !gh pr create`.
+- Disabled `commit.gpgsign` (was prompting 1Password on every commit — solo dev on private repos doesn't need signed commits; flip to `true` if that ever changes).
+- Switched `dotfiles-mac` remote from SSH → HTTPS to match every other repo and let GitHub Desktop push without the 1Password SSH agent dance. (Underlying SSH issue: the 1Password key `id_ed25519_github` is registered to GitHub as a *signing key* but not an *authentication key* — fix at github.com/settings/ssh/new if you ever want SSH protocol back.)
 
-### 2. Broken pyenv quoting in `zshrc.symlink` ✅ FIXED 2026-04-22
-
-**Root cause:** Lines 29–30 of `zshrc.symlink` were missing closing quotes:
-```zsh
-PYENV_ROOT="$HOME/.pyenv          # no closing "
-PATH="$PYENV_ROOT/bin:$PATH       # no closing "
-```
-zsh treats those as multi-line strings, swallowing the next several lines into the variable. PYENV_ROOT and PATH ended up containing newlines and `if` statement fragments. pyenv was never properly initialized; the user has been falling back on the brew-installed `pyenv` binary via `/opt/homebrew/bin`.
-
-**Fix:** added closing quotes and `export`s.
-
-### 3. Stale `~/.zshenv` & `~/.zlogin` removed ✅ FIXED 2026-04-22
-
-Both symlinks deleted. They pointed to `~/Dropbox/Mackup/` (pre-iCloud era) and contained inert prezto / RVM shims that weren't being relied on. The Dropbox/Mackup files themselves are untouched (and harmless) on disk.
-
-### 4. `fresh.sh` has broken symlink commands
-
-- `ln -s .zshrc $HOME/.zshrc` — relative path with no source file in cwd; would create a dangling symlink.
-- `ln -s ./.mackup.cfg $HOME/.mackup.cfg` — same issue; the actual file lives at `mackup/mackup.cfg.symlink`.
-
-**Recommendation:** Replace the symlink section with a call to `installers/bootstrap.sh`. The bootstrap script already does the right thing (walks every `*.symlink`).
-
-### 5. `installers/bootstrap.sh` references missing `gitconfig.local.symlink.example`
-
-`setup_gitconfig` runs only when `git/gitconfig.local.symlink` is missing, so on a fresh machine where the file already exists in the repo (as an empty file), this branch never runs — but if it ever does, it'll fail because `gitconfig.local.symlink.example` doesn't exist.
-
-**Recommendation:** Either delete the `setup_gitconfig` function or create the `.example` template.
-
-### 6. `~/.gitconfig` is Mackup'd but `~/.dotfiles/git/gitconfig.symlink` exists
-
-`bootstrap.sh` would happily try to install `gitconfig.symlink` → `~/.gitconfig`, but that target is already owned by Mackup (which sets `name = b00llish`, `pr = !sh ~/.dotfiles/git/pull_request.sh`, etc.). Currently the dotfiles `gitconfig.symlink` has no effect because nothing symlinks to it.
-
-**Decision needed:** either (a) make this repo authoritative for `.gitconfig` and remove from Mackup, or (b) delete `git/gitconfig.symlink` and let Mackup own it. Option (a) is more git-friendly (changes are versioned).
-
-### 7. `git pr` alias fixed ✅ FIXED 2026-04-22
-
-Replaced `pr = !sh ~/.dotfiles/git/pull_request.sh` with `pr = !gh pr create` in both the active `~/.gitconfig` and the dotfiles `git/gitconfig.symlink` (kept in sync pending #6 resolution).
-
-### 8. `.gitignore_global` wired up ✅ FIXED 2026-04-22
-
-Active `~/.gitconfig` previously pointed `core.excludesfile = ~/.gitignore` (file didn't exist — global ignores were silently a no-op). Now points to `~/.dotfiles/.gitignore_global`. Verified: `.DS_Store` is globally ignored.
-
-### 9. Plugin manager ✅ RESOLVED 2026-04-22
-
-Migrated off antigen. `zsh/plugins` now sets `plugins=(git sublime z)` for oh-my-zsh's native plugin loader. Non-OMZ plugins (`zsh-autosuggestions`, `powerlevel10k`, `zsh-syntax-highlighting`) are sourced directly from `$HOMEBREW_PREFIX` at the end of `zshrc.symlink`. Brewfile updated to include all three so a fresh Mac install gets them; `antigen` package uninstalled.
-
-### 10. `.zshrc-old` removed ✅ FIXED 2026-04-22
-
-Deleted via `git rm`. Still recoverable from git history if ever needed.
-
-### 11. README's "command will halt after installing oh-my-zsh; re-run" is no longer true
-
-Old `fresh.sh` had logic that exited mid-install. The current one doesn't. (Already corrected in this rewrite.)
-
-### 12. Python pin bumped ✅ FIXED 2026-04-22
-
-`py/install.sh` now installs `3.12.8` (latest 3.12.x patch via pyenv) instead of `3.11.5`.
+**Install scripts:**
+- Rewrote `fresh.sh` as an idempotent end-to-end bootstrap: brew → oh-my-zsh → `bootstrap.sh` symlinks → brew bundle → pyenv → mackup restore → netdata → macOS defaults (with a y/N prompt). Old version had broken `ln -s .zshrc` / `ln -s ./.mackup.cfg` lines.
+- Removed dead `setup_gitconfig` branch from `installers/bootstrap.sh` (referenced a nonexistent `.example` template).
+- Fixed latent infinite-recursion bug in `installers/install.sh` (`find . -name install.sh` was finding itself).
+- Bumped `py/install.sh` from Python 3.11.5 → 3.12.8.
 
 ---
 

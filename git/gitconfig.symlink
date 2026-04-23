@@ -1,34 +1,96 @@
+; ~/.gitconfig — managed by ~/.dotfiles (NOT Mackup).
+; Edit this file directly; changes are versioned in the dotfiles repo.
+
 [user]
 	name = b00llish
 	email = b00llish@pm.me
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAbTOIDCNEnyeqTNDRw7hzkf4Vi9vI3rOEsQNH9qOjdW
+
+[init]
+	defaultBranch = main
+	templatedir = ~/.git_template
+
+[core]
+	excludesfile = ~/.dotfiles/.gitignore_global
+	autocrlf = input
+
+[commit]
+	template = ~/.gitmessage
+	; flip to true to sign every commit via 1Password (op-ssh-sign)
+	gpgsign = false
+
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+[push]
+	default = current
+
+[fetch]
+	prune = true
+
+[merge]
+	ff = only
 
 [mergetool]
 	keepBackup = false
 
-[alias]
-	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
-	last = log -1 HEAD
-	unstage = reset HEAD --
-	pr = !gh pr create
-	remotes = remote -v
-	syncu = !sh ~/.dotfiles/git/sync_with_upstream.sh
-	diffall = !sh ~/.dotfiles/git/git_unpushed.sh
-	plog = !sh ~/.dotfiles/git/plog.sh
-	lazy = !lazygit
-	contributors = shortlog --summary --numbered
+[rebase]
+	autosquash = true
+
+[diff]
+	colorMoved = zebra
 
 [color]
+	ui = auto
 	diff = auto
 	status = auto
 	branch = auto
-	ui = true
 
-[commit]
-	gpgsign = false
-
-[core]
-	editor = pycharm
-	excludesfile = ~/.dotfiles/.gitignore
-	
 [credential]
 	helper = osxkeychain
+
+; auto-installed by `git lfs install`; leave alone unless removing LFS
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[alias]
+	; staging
+	aa = add --all
+	ap = add --patch
+	unstage = reset HEAD --
+
+	; committing
+	ci = commit -v
+	amend = commit --amend --no-edit
+
+	; branching / checkout
+	co = checkout
+	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
+	branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
+
+	; status / log / diff
+	st = status
+	last = log -1 HEAD
+	plog = !sh ~/.dotfiles/git/plog.sh
+	diffall = !sh ~/.dotfiles/git/git_unpushed.sh
+	contributors = shortlog --summary --numbered
+
+	; remotes / push / pr
+	remotes = remote -v
+	pf = push --force-with-lease
+	pr = !gh pr create
+	syncu = !sh ~/.dotfiles/git/sync_with_upstream.sh
+
+	; tools
+	lazy = !lazygit
+
+; machine-specific overrides (keeps secrets/identity out of the dotfiles repo
+; if ever needed). The target is git/gitconfig.local.symlink in the dotfiles
+; repo and is empty by default.
+[include]
+	path = ~/.gitconfig.local

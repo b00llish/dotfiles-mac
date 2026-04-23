@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-
-# Run all dotfiles installers.
+#
+# Run every */install.sh under the dotfiles tree (e.g. py/install.sh).
+# Excludes itself to avoid infinite recursion.
 
 set -e
 
-cd "$(dirname $0)"/..
+cd "$(dirname "$0")"/..
 
-# find the installers and run them iteratively
-find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+find . -name install.sh -not -path './installers/*' | while read installer; do
+  echo "==> running $installer"
+  sh -c "$installer"
+done
