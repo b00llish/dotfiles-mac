@@ -4,6 +4,50 @@ ibit() {
   (cd ~/Developer/Projects/btc_options && poetry run streamlit run app.py)
 }
 
+
+
+# ---------- RDI-Market-Profitability Functions ----------
+
+
+
+# rdi-rev — run the stop-ledger (revenue) pipeline from anywhere.
+#
+# Install:
+#   echo 'source ~/Developer/Projects/rdi-market-profitability/scripts/rdi-rev.zsh' >> ~/.zshrc
+#   source ~/.zshrc
+#
+# Usage:
+#   rdi-rev                            # uses the default week from run.py
+#   rdi-rev 2026-03-21                 # shorthand: first arg is the week
+#   rdi-rev --week 2026-03-21          # explicit flag
+#   rdi-rev 2026-03-21 --no-upload     # dry-run (no S3 upload)
+#   rdi-rev --help                     # delegates to run.py's argparse help
+
+rdi-rev() {
+  local repo="$HOME/Developer/Projects/rdi-market-profitability"
+  local py="$repo/.venv/bin/python"
+
+  if [[ ! -x "$py" ]]; then
+    echo "rdi-rev: venv python not found at $py" >&2
+    echo "rdi-rev: create the venv first (python3 -m venv .venv && .venv/bin/pip install -r requirements.txt)" >&2
+    return 127
+  fi
+
+  # Ergonomic arg handling: if $1 matches YYYY-MM-DD, prepend --week.
+  # Otherwise forward args verbatim so all of run.py's flags work.
+  local -a args=()
+  if [[ $# -gt 0 && "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+    args=(--week "$1")
+    shift
+    args+=("$@")
+  else
+    args=("$@")
+  fi
+
+  (cd "$repo" && "$py" run.py "${args[@]}")
+}
+
+
 # rdi-cost — run the truck-day cost pipeline from anywhere.
 #
 # Install:
@@ -39,4 +83,77 @@ rdi-cost() {
   fi
 
   (cd "$repo" && "$py" run_cost.py "${args[@]}")
+}
+
+
+# Usage:
+#   rdi-merge                — merge every common week, upload combined file
+#   rdi-merge --no-upload    — same but stage locally, skip S3
+
+rdi-merge() {
+  local repo="$HOME/Developer/Projects/rdi-market-profitability"
+  local py="$repo/.venv/bin/python"
+
+  if [[ ! -x "$py" ]]; then
+    echo "rdi-merge: venv python not found at $py" >&2
+    echo "rdi-merge: create the venv first (python3 -m venv .venv && .venv/bin/pip install -r requirements.txt)" >&2
+    return 127
+  fi
+
+  (cd "$repo" && "$py" run_merge.py "$@")
+}
+
+
+# ---------- RDI-Statements Functions ----------
+
+
+
+# rdi-comdata — parse a Comdata fuel-card statement PDF into an Excel workbook.
+#
+# Install:
+#   echo 'source ~/Developer/Projects/rdi-statements/scripts/rdi-comdata.zsh' >> ~/.zshrc
+#   source ~/.zshrc
+#
+# Usage:
+#   rdi-comdata 2026-03-23                 # resolve invoice date → PDF in OneDrive
+#   rdi-comdata /full/path/to/file.pdf     # explicit path
+#   rdi-comdata 2026-03-23 --strict        # any warning exits non-zero
+#   rdi-comdata 2026-03-23 --output-dir ~/Documents/ComdataXLS
+#   rdi-comdata 'path/*.pdf'               # batch via shell glob (quote to defer)
+#   rdi-comdata --help                     # delegates to the CLI's help
+
+rdi-comdata() {
+  local repo="$HOME/Developer/Projects/rdi-statements"
+  local bin="$repo/.venv/bin/rdi-statements"
+  local bills_dir="$HOME/Library/CloudStorage/OneDrive-RetailDeliveryService/CM - Shared/Comdata Bills"
+
+  if [[ ! -x "$bin" ]]; then
+    echo "rdi-comdata: CLI not found at $bin" >&2
+    echo "rdi-comdata: run 'poetry install' in $repo first" >&2
+    return 127
+  fi
+
+  # Ergonomic arg handling: if $1 is YYYY-MM-DD, resolve it to the PDF in
+  # OneDrive by filename convention (invoice date = first 6 digits as YYMMDD).
+  # Otherwise forward args verbatim so all of `rdi-statements comdata parse`'s
+  # flags work (--strict, --output-dir, globs, etc.).
+  local -a args=()
+  if [[ $# -gt 0 && "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+    local yymmdd="${1:2:2}${1:5:2}${1:8:2}"
+    local -a matches
+    # (N) = nullglob — empty array instead of literal pattern when no match
+    matches=("$bills_dir"/XG035KM_CXAC0002.D.XG035.NA."$yymmdd".*.pdf(N))
+    if (( ${#matches[@]} == 0 )); then
+      echo "rdi-comdata: no PDF found for invoice date $1" >&2
+      echo "rdi-comdata: looked for ${yymmdd} in $bills_dir" >&2
+      return 2
+    fi
+    args=("${matches[1]}")
+    shift
+    args+=("$@")
+  else
+    args=("$@")
+  fi
+
+  (cd "$repo" && "$bin" comdata parse "${args[@]}")
 }
