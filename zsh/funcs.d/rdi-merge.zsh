@@ -1,0 +1,1 @@
+/Users/cmadison/Developer/Projects/rdi-market-profitability/scripts/rdi-merge.zsh

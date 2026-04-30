@@ -4,7 +4,13 @@ source $HOME/.dotfiles/zsh/config
 # Load: Plugins
 source $HOME/.dotfiles/zsh/plugins
 
-# Load: OH-MY-ZSH
+# Load: Named Directories — must happen BEFORE oh-my-zsh.sh runs compinit so
+# the completion system knows about ~projects, ~dotfiles, etc. Otherwise the
+# _expand completer has nothing to offer for `~projects/<TAB>`.
+source $HOME/.dotfiles/zsh/named-dirs
+
+# Load: OH-MY-ZSH (runs compinit using the FPATH set up by brew shellenv in
+# .zprofile + zsh-completions). Do not call compinit again later.
 source $ZSH/oh-my-zsh.sh
 
 # Load: powerlevel10k prompt config. The variables use the POWERLEVEL9K_* prefix
@@ -12,14 +18,16 @@ source $ZSH/oh-my-zsh.sh
 # configuration wizard on every new shell.
 source $HOME/.dotfiles/zsh/p10k.zsh
 
-# Load: Named Directories
-source $HOME/.dotfiles/zsh/named-dirs
-
 # Load: ALIASES
 source $HOME/.dotfiles/zsh/aliases
 
-# Load: Functions
-source $HOME/.dotfiles/zsh/funcs
+# Load: Functions — each *.zsh in funcs.d/ is a symlink into the repo that
+# owns the function. Edit the canonical file in its repo; reload with
+# `source ~/.zshrc`. Add a new function = drop a symlink into funcs.d/.
+for _f in $HOME/.dotfiles/zsh/funcs.d/*.zsh(N); do
+  source "$_f"
+done
+unset _f
 
 # Add: Go Enviroment to PATH
 export PATH=${PATH}:$HOME/go/bin
@@ -33,17 +41,6 @@ fi
 
 # Add Poetry to the PATH:
 export PATH=$HOME/.poetry/bin:${PATH}
-
-# Activate ZSH Completions
-# https://formulae.brew.sh/formula/zsh-completions#default
-if type brew &>/dev/null; then
-     FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-
-     autoload -Uz compinit
-     compinit
-    fi
-
-
 
 # Install: VSCode's `code` command in PATH
 # cp $HOME/.dotfiles/zsh/vscode /usr/local/bin/code

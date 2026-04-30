@@ -18,6 +18,38 @@ fi
 # Path to your oh-my-zsh installation.
 export ZSH="${HOME}/.oh-my-zsh"
 
+# Completion behavior — applied before oh-my-zsh runs compinit so the styles
+# are in effect for the first completion pass.
+#
+# - _expand: lets `~projects/<TAB>` and `$VAR/<TAB>` expand inline.
+# - _complete: standard completion.
+# - _ignored: include matches normally hidden by ignored-patterns.
+# - _approximate: spell-correct partial completions.
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+
+# Show a navigable menu once there's more than one match (sane default for
+# tab-completing into ~projects/ which has many entries).
+zstyle ':completion:*' menu select
+
+# Group results by type (directories, files, options) with a heading.
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%F{yellow}%B%d%b%f'
+
+# Case-insensitive, partial-word, and substring matching — works well with
+# named dirs (e.g., `~proj<TAB>` finds projects).
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+
+# Cache slow completions (e.g., apt, pip) under ~/.zsh/cache.
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path "$HOME/.zsh/cache"
+
+# `cd projects` without `~` works too, since hash -d also creates a shell var.
+setopt cdablevars
+
+# Tab completes from the cursor position rather than end of word.
+setopt complete_in_word
+setopt always_to_end
+
 # Add poetry to path
 export PATH="/Users/cmadison/.local/bin:$PATH"
 
